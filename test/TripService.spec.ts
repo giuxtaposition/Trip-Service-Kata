@@ -3,6 +3,7 @@ import UserNotLoggedInException from "../src/exception/UserNotLoggedInException"
 import TripService from "../src/trip/TripService";
 import User from "../src/user/User";
 import Trip from "../src/trip/Trip";
+import { UserBuilder } from "./userBuilder";
 
 describe("Trip Service should", () => {
   const GUEST: User = null;
@@ -50,48 +51,6 @@ describe("Trip Service should", () => {
 
     expect(friendTrips.length).to.equal(2);
   });
-
-  class UserBuilder {
-    private friends: User[];
-    private trips: Trip[];
-
-    public aUser(): UserBuilder {
-      return new UserBuilder();
-    }
-
-    public withTrips(...trips: Trip[]) {
-      this.trips = trips.map((trip) => {
-        return trip;
-      });
-      return this;
-    }
-
-    public friendsWith(...friends: User[]): UserBuilder {
-      this.friends = friends.map((friend) => {
-        return friend;
-      });
-      return this;
-    }
-
-    public build(): User {
-      let user: User = new User();
-      this.addTripsTo(user);
-      this.addFriendsTo(user);
-      return user;
-    }
-
-    private addTripsTo(user: User) {
-      this.trips.forEach((trip) => {
-        user.addTrip(trip);
-      });
-    }
-
-    private addFriendsTo(user: User) {
-      this.friends.forEach((friend) => {
-        user.addFriend(friend);
-      });
-    }
-  }
 
   class TestableTripService extends TripService {
     protected getLoggedUser(): User {
