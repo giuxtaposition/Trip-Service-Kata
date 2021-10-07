@@ -14,16 +14,6 @@ describe("Trip Service should", () => {
   let loggedInUser: User;
   let tripService: TripService;
 
-  class TestableTripService extends TripService {
-    protected getLoggedUser(): User {
-      return loggedInUser;
-    }
-
-    protected tripsBy(user: User): Trip[] {
-      return user.getTrips();
-    }
-  }
-
   beforeEach(() => {
     tripService = new TestableTripService();
     loggedInUser = REGISTERED_USER;
@@ -38,9 +28,11 @@ describe("Trip Service should", () => {
   });
 
   it("not return any trips when users are not friends", () => {
-    let friend = new User();
-    friend.addFriend(ANOTHER_USER);
-    friend.addTrip(TO_BRAZIL);
+    let friend = UserBuilder.prototype
+      .aUser()
+      .friendsWith(ANOTHER_USER)
+      .withTrips(TO_BRAZIL)
+      .build();
 
     let friendTrips: Trip[] = tripService.getTripsByUser(friend);
 
@@ -48,14 +40,66 @@ describe("Trip Service should", () => {
   });
 
   it("return trips when users are friends", () => {
-    let friend = new User();
-    friend.addFriend(ANOTHER_USER);
-    friend.addFriend(loggedInUser);
-    friend.addTrip(TO_BRAZIL);
-    friend.addTrip(TO_LONDON);
+    let friend: User = UserBuilder.prototype
+      .aUser()
+      .friendsWith(ANOTHER_USER, loggedInUser)
+      .withTrips(TO_LONDON, TO_BRAZIL)
+      .build();
 
     let friendTrips: Trip[] = tripService.getTripsByUser(friend);
 
     expect(friendTrips.length).to.equal(2);
   });
+
+  class UserBuilder {
+    private friends: User[];
+    private trips: Trip[];
+
+    public aUser(): UserBuilder {
+      return new UserBuilder();
+    }
+
+    public withTrips(...trips: Trip[]) {
+      this.trips = trips.map((trip) => {
+        return trip;
+      });
+      return this;
+    }
+
+    public friendsWith(...friends: User[]): UserBuilder {
+      this.friends = friends.map((friend) => {
+        return friend;
+      });
+      return this;
+    }
+
+    public build(): User {
+      let user: User = new User();
+      this.addTripsTo(user);
+      this.addFriendsTo(user);
+      return user;
+    }
+
+    private addTripsTo(user: User) {
+      this.trips.forEach((trip) => {
+        user.addTrip(trip);
+      });
+    }
+
+    private addFriendsTo(user: User) {
+      this.friends.forEach((friend) => {
+        user.addFriend(friend);
+      });
+    }
+  }
+
+  class TestableTripService extends TripService {
+    protected getLoggedUser(): User {
+      return loggedInUser;
+    }
+
+    protected tripsBy(user: User): Trip[] {
+      return user.getTrips();
+    }
+  }
 });
