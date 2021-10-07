@@ -26,6 +26,7 @@ describe("Trip Service should", () => {
 
   beforeEach(() => {
     tripService = new TestableTripService();
+    loggedInUser = REGISTERED_USER;
   });
 
   it("throw an exception when user is not logged in", () => {
@@ -37,8 +38,6 @@ describe("Trip Service should", () => {
   });
 
   it("not return any trips when users are not friends", () => {
-    loggedInUser = REGISTERED_USER;
-
     let friend = new User();
     friend.addFriend(ANOTHER_USER);
     friend.addTrip(TO_BRAZIL);
@@ -49,8 +48,6 @@ describe("Trip Service should", () => {
   });
 
   it("return trips when users are friends", () => {
-    loggedInUser = REGISTERED_USER;
-
     let friend = new User();
     friend.addFriend(ANOTHER_USER);
     friend.addFriend(loggedInUser);
