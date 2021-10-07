@@ -19,7 +19,7 @@ export default class TripService {
       }
 
       if (isFriend) {
-        tripList = TripDAO.findTripsByUser(user);
+        tripList = this.tripsBy(user);
       }
 
       return tripList;
@@ -30,5 +30,9 @@ export default class TripService {
 
   protected getLoggedUser(): User {
     return UserSession.getLoggedUser();
+  }
+
+  protected tripsBy(user: User): Trip[] {
+    return TripDAO.findTripsByUser(user);
   }
 }
