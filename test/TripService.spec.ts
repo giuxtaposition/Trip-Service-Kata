@@ -11,6 +11,7 @@ describe("Trip Service should", () => {
   const ANOTHER_USER: User = new User();
   const TO_BRAZIL: Trip = new Trip();
   let loggedInUser: User;
+  let tripService: TripService;
 
   class TestableTripService extends TripService {
     protected getLoggedUser(): User {
@@ -18,9 +19,11 @@ describe("Trip Service should", () => {
     }
   }
 
-  it("throw an exception when user is not logged in", () => {
-    let tripService: TestableTripService = new TestableTripService();
+  beforeEach(() => {
+    tripService = new TestableTripService();
+  });
 
+  it("throw an exception when user is not logged in", () => {
     loggedInUser = GUEST;
 
     expect(() => {
@@ -29,8 +32,6 @@ describe("Trip Service should", () => {
   });
 
   it("not return any trips when users are not friends", () => {
-    let tripService: TestableTripService = new TestableTripService();
-
     loggedInUser = REGISTERED_USER;
 
     let friend = new User();
