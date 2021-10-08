@@ -12,19 +12,15 @@ describe("Trip Service should", () => {
   const ANOTHER_USER: User = new User();
   const TO_BRAZIL: Trip = new Trip();
   const TO_LONDON: Trip = new Trip();
-  let loggedInUser: User;
   let tripService: TripService;
 
   beforeEach(() => {
     tripService = new TestableTripService();
-    loggedInUser = REGISTERED_USER;
   });
 
   it("throw an exception when user is not logged in", () => {
-    loggedInUser = GUEST;
-
     expect(() => {
-      tripService.getTripsByUser(UNUSED_USER);
+      tripService.getTripsByUser(UNUSED_USER, GUEST);
     }).to.throw(UserNotLoggedInException);
   });
 
@@ -35,7 +31,10 @@ describe("Trip Service should", () => {
       .withTrips(TO_BRAZIL)
       .build();
 
-    let friendTrips: Trip[] = tripService.getTripsByUser(friend);
+    let friendTrips: Trip[] = tripService.getTripsByUser(
+      friend,
+      REGISTERED_USER
+    );
 
     expect(friendTrips.length).to.equal(0);
   });
@@ -43,20 +42,19 @@ describe("Trip Service should", () => {
   it("return trips when users are friends", () => {
     let friend: User = UserBuilder.prototype
       .aUser()
-      .friendsWith(ANOTHER_USER, loggedInUser)
+      .friendsWith(ANOTHER_USER, REGISTERED_USER)
       .withTrips(TO_LONDON, TO_BRAZIL)
       .build();
 
-    let friendTrips: Trip[] = tripService.getTripsByUser(friend);
+    let friendTrips: Trip[] = tripService.getTripsByUser(
+      friend,
+      REGISTERED_USER
+    );
 
     expect(friendTrips.length).to.equal(2);
   });
 
   class TestableTripService extends TripService {
-    protected getLoggedUser(): User {
-      return loggedInUser;
-    }
-
     protected tripsBy(user: User): Trip[] {
       return user.getTrips();
     }
