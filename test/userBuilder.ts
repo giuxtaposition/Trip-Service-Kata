@@ -31,14 +31,18 @@ export class UserBuilder {
   }
 
   private addTripsTo(user: User) {
-    this.trips.forEach((trip) => {
-      user.addTrip(trip);
-    });
+    if (this.trips) {
+      this.trips.forEach((trip) => {
+        user.addTrip(trip);
+      });
+    }
   }
 
   private addFriendsTo(user: User) {
-    this.friends.forEach((friend) => {
-      user.addFriend(friend);
-    });
+    if (this.friends) {
+      this.friends.forEach((friend) => {
+        user.addFriend(friend);
+      });
+    }
   }
 }

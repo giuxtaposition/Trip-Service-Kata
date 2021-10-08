@@ -1,22 +1,26 @@
 import Trip from "../trip/Trip";
 
 export default class User {
-    private trips: Trip[] = [];
-    private friends: User[] = [];
+  private trips: Trip[] = [];
+  private friends: User[] = [];
 
-    public getFriends(): User[] {
-        return this.friends;
-    }
+  public getFriends(): User[] {
+    return this.friends;
+  }
 
-    public addFriend(user: User): void {
-        this.friends.push(user);
-    }
+  public addFriend(user: User): void {
+    this.friends.push(user);
+  }
 
-    public addTrip(trip: Trip): void {
-        this.trips.push(trip);
-    }
+  public addTrip(trip: Trip): void {
+    this.trips.push(trip);
+  }
 
-    public getTrips(): Trip[] {
-        return this.trips;
-    }
+  public getTrips(): Trip[] {
+    return this.trips;
+  }
+
+  public isFriendsWith(anotherUser: User): any {
+    return this.friends.includes(anotherUser);
+  }
 }
