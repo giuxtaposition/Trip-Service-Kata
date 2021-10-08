@@ -6,26 +6,17 @@ import TripDAO from "./TripDAO";
 
 export default class TripService {
   public getTripsByUser(user: User): Trip[] {
-    let tripList: Trip[] = [];
-    const loggedUser: User = this.getLoggedUser();
-    let isFriend: boolean = false;
-
-    if (loggedUser != null) {
-      for (const friend of user.getFriends()) {
-        if (friend === loggedUser) {
-          isFriend = true;
-          break;
-        }
-      }
-
-      if (isFriend) {
-        tripList = this.tripsBy(user);
-      }
-
-      return tripList;
-    } else {
+    if (this.getLoggedUser() === null) {
       throw new UserNotLoggedInException();
     }
+
+    return user.isFriendsWith(this.getLoggedUser())
+      ? this.tripsBy(user)
+      : this.noTrips();
+  }
+
+  private noTrips(): Trip[] {
+    return new Array<Trip>();
   }
 
   protected getLoggedUser(): User {
