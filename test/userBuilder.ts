@@ -2,8 +2,8 @@ import Trip from "../src/trip/Trip";
 import User from "../src/user/User";
 
 export class UserBuilder {
-  private friends: User[];
-  private trips: Trip[];
+  private friends: User[] = new Array<User>();
+  private trips: Trip[] = new Array<Trip>();
 
   public aUser(): UserBuilder {
     return new UserBuilder();
@@ -31,18 +31,14 @@ export class UserBuilder {
   }
 
   private addTripsTo(user: User) {
-    if (this.trips) {
-      this.trips.forEach((trip) => {
-        user.addTrip(trip);
-      });
-    }
+    this.trips.forEach((trip) => {
+      user.addTrip(trip);
+    });
   }
 
   private addFriendsTo(user: User) {
-    if (this.friends) {
-      this.friends.forEach((friend) => {
-        user.addFriend(friend);
-      });
-    }
+    this.friends.forEach((friend) => {
+      user.addFriend(friend);
+    });
   }
 }
